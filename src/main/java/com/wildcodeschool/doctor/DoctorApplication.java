@@ -1,51 +1,62 @@
 package com.wildcodeschool.doctor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @SpringBootApplication
-
 public class DoctorApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DoctorApplication.class, args);
 	}
-	 @RequestMapping("/")
-	    @ResponseBody
-	    public String index() {
-	    	return "<ul><li><a href='/doctor/1'>William Hartnell</a></li>"
-	    			+ "<li><a href='/doctor/2'>Patrick Troughton</a></li>"
-	    			+ "<li><a href='/doctor/3'>Jon Pertwee</a></li>"
-	    			+ "<li><a href='/doctor/4'>Tom Baker</a></li></ul>";    
-	    	}
-	 
-	 @RequestMapping(value = "/doctor", method = RequestMethod.GET)
-	   public String redirect() {
-	      return "redirect:/";
-	   }
-	 @RequestMapping("/doctor/1")
-	    @ResponseBody
-	    public String doctor1() {
-	    	return "<h1>William Hartnell</h1>";    
-	    	}
-	 @RequestMapping("/doctor/2")
-	    @ResponseBody
-	    public String doctor2() {
-	    	return "<h1>Patrick Troughton</h1>";    
-	    	}
-	 @RequestMapping("/doctor/3")
-	    @ResponseBody
-	    public String doctor3() {
-	    	return "<h1>Jon Pertwee</h1>";    
-	    	}
-	 @RequestMapping("/doctor/4")
-	    @ResponseBody
-	    public String doctor4() {
-	    	return "<h1>Tom Baker</h1>";    
-	    	}
+
+	@RequestMapping("/{id}")
+	@ResponseBody
+	public Doctor returnDoc(@PathVariable int id) {
+		List<Doctor> doctors = new ArrayList<Doctor>();
+
+		Doctor doc1 = new Doctor(9, "Christopher Eccleston");
+		Doctor doc2 = new Doctor(10, "David Tennant");
+		Doctor doc3 = new Doctor(11, "Matt Smith");
+		Doctor doc4 = new Doctor(12, "Peter Capaldi");
+		Doctor doc5 = new Doctor(13, "Jodie Whittaker");
+
+		doctors.add(doc1);
+		doctors.add(doc2);
+		doctors.add(doc3);
+		doctors.add(doc4);
+		doctors.add(doc5);
+
+		if (id >= 1 && id <= 8) {
+			throw new ResponseStatusException(HttpStatus.SEE_OTHER, "303 See Other.");
+		} else if (id >= 14 || id ==0) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "404 See Other.");
+		}
+
+		switch (id) {
+		case 9:
+			return doc1;
+		case 10:
+			return doc2;
+		case 11:
+			return doc3;
+		case 12:
+			return doc4;
+		case 13:
+			return doc5;
+		default:
+			return doc5;
+		}
+
+	}
 }
